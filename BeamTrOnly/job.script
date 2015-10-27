@@ -1,0 +1,18 @@
+#!/bin/bash
+#PBS -l nodes=1:k20
+#PBS -l walltime=00:10:00
+#PBS -A casa
+#PBS -q gpu
+#PBS -N Beam 
+
+# cd to the directory where the  job was submitted
+cd $PBS_O_WORKDIR
+
+# Set up the environment
+source /volatile/casa/akkamesh/BeamTrOnly/env.sh
+
+#Pick the executable 
+EXECUTABLE=/volatile/casa/akkamesh/BeamTrOnly/exec
+
+
+mpirun_rsh -rsh -np 1 -hostfile $PBS_NODEFILE MV2_ENABLE_AFFINITY=0 $EXECUTABLE
