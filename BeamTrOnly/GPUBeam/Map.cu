@@ -37,7 +37,7 @@ void dumpBeamByThread(Simulator *sim, double *&d_x, double *&h_x, int Npart, int
       } else {
 	io->pending_log = true;
 	return;
-     }
+      }
     }
     if (io->log_thread.joinable()) { io->log_thread.join(); }
     io->pending_log = false;
@@ -297,7 +297,7 @@ applyMapByAtrib(int const* __restrict__ itM,
       int it = sdata[newWarpId * WARP + laneId];
 
       // ie < Npart may not work correctly, since you are using shfl you need 32 threads
-      #pragma unroll 4
+#pragma unroll 4
       for(int k = 0; (k < 4); ++k){
         double xterm = 1, yterm = 1, zterm = 1, wterm = 1;
         int idx = (NCOL + 2) * k;
@@ -504,7 +504,7 @@ applyMapByAtrib(int const* __restrict__ itM,
       myterm = myterm + yterm * m;	
       mzterm = mzterm + zterm * m;	
       mwterm = mwterm + wterm * m;	
-   }
+    }
   }
   
   __syncthreads();
@@ -856,8 +856,8 @@ gf2Eqns(int const* __restrict__ itM, double *xi, double *xf, double *f_xi_xf, in
 __global__
 void
 JacobianKernel0(int const* __restrict__ itM, double *xi, double *xf, double *f_xi_xf, double *jac, int *dflag,
-	       int Npart, int maxLen,
-	       int iNrow0, int iNrow1, int iNrow2, int iNrow3, int iNrow4, int iNrow5){
+		int Npart, int maxLen,
+		int iNrow0, int iNrow1, int iNrow2, int iNrow3, int iNrow4, int iNrow5){
   int ie = blockIdx.x * BLOCKDIMX + threadIdx.x;
   double xf0 = 0, xf1 = 0, xf2 = 0, xf3 = 0, xf4 = 0, xf5 = 0, delta;
   
@@ -884,8 +884,8 @@ JacobianKernel0(int const* __restrict__ itM, double *xi, double *xf, double *f_x
 __global__
 void
 JacobianKernel1(int const* __restrict__ itM, double *xi, double *xf, double *f_xi_xf, double *jac, int *dflag,
-	       int Npart, int maxLen,
-	       int iNrow0, int iNrow1, int iNrow2, int iNrow3, int iNrow4, int iNrow5){
+		int Npart, int maxLen,
+		int iNrow0, int iNrow1, int iNrow2, int iNrow3, int iNrow4, int iNrow5){
   int ie = blockIdx.x * BLOCKDIMX + threadIdx.x;
   double xf0 = 0, xf1 = 0, xf2 = 0, xf3 = 0, xf4 = 0, xf5 = 0, delta;
   
@@ -912,8 +912,8 @@ JacobianKernel1(int const* __restrict__ itM, double *xi, double *xf, double *f_x
 __global__
 void
 JacobianKernel2(int const* __restrict__ itM, double *xi, double *xf, double *f_xi_xf, double *jac, int *dflag,
-	       int Npart, int maxLen,
-	       int iNrow0, int iNrow1, int iNrow2, int iNrow3, int iNrow4, int iNrow5){
+		int Npart, int maxLen,
+		int iNrow0, int iNrow1, int iNrow2, int iNrow3, int iNrow4, int iNrow5){
   int ie = blockIdx.x * BLOCKDIMX + threadIdx.x;
   double xf0 = 0, xf1 = 0, xf2 = 0, xf3 = 0, xf4 = 0, xf5 = 0, delta;
   
@@ -939,8 +939,8 @@ JacobianKernel2(int const* __restrict__ itM, double *xi, double *xf, double *f_x
 __global__
 void
 JacobianKernel3(int const* __restrict__ itM, double *xi, double *xf, double *f_xi_xf, double *jac, int *dflag,
-	       int Npart, int maxLen,
-	       int iNrow0, int iNrow1, int iNrow2, int iNrow3, int iNrow4, int iNrow5){
+		int Npart, int maxLen,
+		int iNrow0, int iNrow1, int iNrow2, int iNrow3, int iNrow4, int iNrow5){
   int ie = blockIdx.x * BLOCKDIMX + threadIdx.x;
   double xf0 = 0, xf1 = 0, xf2 = 0, xf3 = 0, xf4 = 0, xf5 = 0, delta;
   
@@ -966,8 +966,8 @@ JacobianKernel3(int const* __restrict__ itM, double *xi, double *xf, double *f_x
 __global__
 void
 JacobianKernel4(int const* __restrict__ itM, double *xi, double *xf, double *f_xi_xf, double *jac, int *dflag,
-	       int Npart, int maxLen,
-	       int iNrow0, int iNrow1, int iNrow2, int iNrow3, int iNrow4, int iNrow5){
+		int Npart, int maxLen,
+		int iNrow0, int iNrow1, int iNrow2, int iNrow3, int iNrow4, int iNrow5){
   int ie = blockIdx.x * BLOCKDIMX + threadIdx.x;
   double xf0 = 0, xf1 = 0, xf2 = 0, xf3 = 0, xf4 = 0, xf5 = 0, delta;
   
@@ -993,8 +993,8 @@ JacobianKernel4(int const* __restrict__ itM, double *xi, double *xf, double *f_x
 __global__
 void
 JacobianKernel5(int const* __restrict__ itM, double *xi, double *xf, double *f_xi_xf, double *jac, int *dflag,
-	       int Npart, int maxLen,
-	       int iNrow0, int iNrow1, int iNrow2, int iNrow3, int iNrow4, int iNrow5){
+		int Npart, int maxLen,
+		int iNrow0, int iNrow1, int iNrow2, int iNrow3, int iNrow4, int iNrow5){
   int ie = blockIdx.x * BLOCKDIMX + threadIdx.x;
   double xf0 = 0, xf1 = 0, xf2 = 0, xf3 = 0, xf4 = 0, xf5 = 0, delta;
   
@@ -1056,74 +1056,79 @@ LUDcmp_lubksb(double *da, double *f, double *xf, int *dflag, int Npart){
 	a[i * 6 + j] = da[Npart * (j * 6 + i) + ie];
 	if((temp=fabs(a[i * 6 + j])) > big) big = temp;
       }
-      if(big == 0)
-	printf("Abort::Singular Matrix!!! - By thread %d\n", ie);
+      if(big == 0){
+	dflag[ie] = 1;
+	break;
+	//printf("Abort::Singular Matrix!!! - By thread %d\n", ie);
+      }
       vv[i] = 1/big;
     }
 
-    for (int j = 0; j < 6; ++j){	  //Loop over columns of  Crout's method
-      for (int i = 0; i < j; ++i){
-	sum = a[i*6+j];
-	for (int k = 0; k < i; ++k) sum -= a[i*6+k]*a[k*6+j];
-	a[i*6+j] = sum;
-      }
-      //Search for largest pivot element
-      big = 0.0;
-      for (int i = j; i < 6; ++i){
-	sum = a[i*6+j];
-	for (int k = 0; k < j; ++k) sum -= a[i*6+k]*a[k*6+j];
-	a[i*6+j] = sum;
-	if ( (dum=vv[i]*fabs(sum))>=big){
-	  big = dum;
-	  imax = i;
+    if(dflag[ie] == 0){
+      for (int j = 0; j < 6; ++j){	  //Loop over columns of  Crout's method
+	for (int i = 0; i < j; ++i){
+	  sum = a[i*6+j];
+	  for (int k = 0; k < i; ++k) sum -= a[i*6+k]*a[k*6+j];
+	  a[i*6+j] = sum;
 	}
-      }
+	//Search for largest pivot element
+	big = 0.0;
+	for (int i = j; i < 6; ++i){
+	  sum = a[i*6+j];
+	  for (int k = 0; k < j; ++k) sum -= a[i*6+k]*a[k*6+j];
+	  a[i*6+j] = sum;
+	  if ( (dum=vv[i]*fabs(sum))>=big){
+	    big = dum;
+	    imax = i;
+	  }
+	}
 
-      if (j != imax){			// Do we need to interchange rows?
-	for (int k = 0; k < 6; ++k){	//Yes
-	  dum = a[imax*6+k];
-	  a[imax*6+k] = a[j*6+k];
-	  a[j*6+k] = dum;
+	if (j != imax){			// Do we need to interchange rows?
+	  for (int k = 0; k < 6; ++k){	//Yes
+	    dum = a[imax*6+k];
+	    a[imax*6+k] = a[j*6+k];
+	    a[j*6+k] = dum;
+	  }
+	  //d = -d;				//change the parity of d;
+	  vv[imax] = vv[j];	//Interchange the scale factor;
 	}
-	//d = -d;				//change the parity of d;
-	vv[imax] = vv[j];	//Interchange the scale factor;
-      }
       
-      idx[j] = imax;
-      if (a[j*6+j]==0)	a[j*6+j] = 1.0e-20;	//If the pivot element is zero, submitted by a tiny value
+	idx[j] = imax;
+	if (a[j*6+j]==0)	a[j*6+j] = 1.0e-20;	//If the pivot element is zero, submitted by a tiny value
 		
-      if(j != 5){	    //Divide by the pivot element
-	dum = 1.0/(a[j*6+j]);
-	for (int i=j+1; i<6; ++i) a[i*6+j] *= dum;
+	if(j != 5){	    //Divide by the pivot element
+	  dum = 1.0/(a[j*6+j]);
+	  for (int i=j+1; i<6; ++i) a[i*6+j] *= dum;
+	}
       }
-    }
     
     
-    //lubksb
-    int ii=-1, ip;
+      //lubksb
+      int ii=-1, ip;
   
-    for(int i=0; i < 6; ++i){
-      ip = idx[i];
-      sum = f[ip*Npart + ie];
-      f[ip*Npart + ie] = f[i*Npart + ie];
-      if(ii + 1)
-	for(int j = ii; j <= i-1; ++j)	sum -= a[i*6+j]*f[j*Npart + ie];
-      else if (sum) ii=i;
-      f[i*Npart + ie] = sum; 
-    }
+      for(int i=0; i < 6; ++i){
+	ip = idx[i];
+	sum = f[ip*Npart + ie];
+	f[ip*Npart + ie] = f[i*Npart + ie];
+	if(ii + 1)
+	  for(int j = ii; j <= i-1; ++j)	sum -= a[i*6+j]*f[j*Npart + ie];
+	else if (sum) ii=i;
+	f[i*Npart + ie] = sum; 
+      }
     
 
-    for (int i=5; i>=0; --i){
-      sum = f[i*Npart + ie];
-      for(int j=i+1;j < 6; ++j)	{
-	sum -= a[i*6+j]*f[j*Npart + ie];
-      }
+      for (int i=5; i>=0; --i){
+	sum = f[i*Npart + ie];
+	for(int j=i+1;j < 6; ++j)	{
+	  sum -= a[i*6+j]*f[j*Npart + ie];
+	}
       
-      f[i*Npart + ie] = sum/a[i*6+i];
-    }
+	f[i*Npart + ie] = sum/a[i*6+i];
+      }
     
-    for(int i = 0; i < 6; ++i){
-      xf[i * Npart + ie] -= f[i * Npart + ie];
+      for(int i = 0; i < 6; ++i){
+	xf[i * Npart + ie] -= f[i * Npart + ie];
+      }
     }
   }
 }
