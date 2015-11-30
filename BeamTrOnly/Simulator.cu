@@ -613,6 +613,11 @@ int main(int argc, char **argv){
       if(!active)break;
     }
   }
+  if(sim.rank == sim.num_tasks-1){
+    quad::timer::start_timer(&timer_node);
+    IO::mergeDumps(sim.bParams->Npart_e, NCOL, sim.bParams->Nfreq, sim.bParams->Niter, sim.num_tasks);
+    quad::timer::stop_timer(&timer_node, "Post-Processing");
+  }
   MPI_Finalize();
   return 0;
 }

@@ -19,6 +19,8 @@ class IO{
   std::map<std::string, std::string> paths;
 
   IO();
+  static void mergeDumps(int , int , int , int , int);
+
   static void
     FileCreatePID(int rank = 0){
     std::ostringstream oss;
@@ -27,11 +29,7 @@ class IO{
     std::string file = "output/" + oss.str() + ".out";
 
     //clean the dump files on every execution...
-    system("exec rm -r ./output/dump.ebeam*");
-    
-    out.open (file.c_str(), std::ofstream::trunc);
-    out.close();
-    
+    system("exec rm -r ./output/dump.*");    
   }
   static void 
     IODebug(const char * error,

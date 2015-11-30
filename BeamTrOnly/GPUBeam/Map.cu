@@ -26,7 +26,7 @@ power(double x, int a){
 void dumpBeamByThread(Simulator *sim, double *&d_x, double *&h_x, int Npart, int Ncol, int iTurn, std::string ic, std::_Ios_Openmode mode){
   BeamParams *bParams = sim->bParams;
   InputProcessing *io = sim->io;
-  if (bParams->Nfreq > 0 && (iTurn % bParams->Nfreq == 0 || io->pending_log)) {
+  if (iTurn == bParams->Niter || (bParams->Nfreq > 0 && (iTurn % bParams->Nfreq == 0 || io->pending_log))) {
     std::stringstream ss;
     ss << std::setprecision(16);
     ss << "Rank: " << sim->rank << " ==> " << iTurn << " turns finished...\n";
@@ -53,7 +53,7 @@ void dumpBeamByThread(Simulator *sim, double *&d_x, double *&h_x, int Npart, int
 void dumpBeamByThread(Simulator *sim, double *&d_x, double *&h_x, int Npart, int Ncol, int iTurn, std::string ic, std::_Ios_Openmode mode){
   BeamParams *bParams = sim->bParams;
   InputProcessing *io = sim->io;
-  if (bParams->Nfreq > 0 && (iTurn % bParams->Nfreq == 0)) {
+  if (iTurn == bParams->Niter || (bParams->Nfreq > 0 && (iTurn % bParams->Nfreq == 0 || io->pending_log))) {
     std::stringstream ss;
     ss << std::setprecision(16);
     ss << "Rank: " << sim->rank << " ==> " << iTurn << " turns finished...\n";

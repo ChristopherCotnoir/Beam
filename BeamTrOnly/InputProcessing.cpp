@@ -20,12 +20,85 @@ IO::IO(){
   outputConfig["dump.pbeam"] = "output/dump.pbeam";
 
   outputConfig["luminosity"] = "output/luminosity.out";
-    
-  for (std::map<std::string, std::string>::iterator it = outputConfig.begin(); it != outputConfig.end(); ++it){
-    std::ofstream file(it->second.c_str(), std::ios::out | std::ios::trunc);
-  }
 }
 
+void IO::mergeDumps(int Npart, int Ncol, int Nfreq, int Niter, int numGPUs){
+  std::stringstream ostr;
+  ostr << "output/dump.ebeam.sdds";
+  std::string ofilename = ostr.str();
+  std::ofstream ofile(ofilename.c_str(), std::ios::out);
+  if (!ofile.is_open()){
+    std::string msg = "Cannot open file dump.ebeam";
+    Abort(msg.c_str());
+  }
+  std::stringstream ss;
+  ss << "SDDS1\n&description text = \"Phase-Space Coordinate Data for Tracking\", contents = \"Phase-Space Coordinate Data\" &end\n&column name = iteration, symbol = n, description = \"Number of cycles\", format_string = %d, type = long,  &end\n&column name = x, symbol = x, units = m, description = \"x position\", format_string = %f, type = double,  &end\n&column name = a, symbol = a, description = \"Normalized x momentum\", format_string = %f, type = double,  &end\n&column name = y, symbol = y, units = m, description = \"y position\", format_string = %f, type = double,  &end\n&column name = b, symbol = b, description = \"Normalized y momentum\", format_string = %f, type = double,  &end\n&column name = l, symbol = l, units = m, description = \"Longitudinal Distance\", format_string = %f, type = double,  &end\n&column name = delta, symbol = $gd, description = \"Energy\", type = double, format_string = %f,  &end\n&data mode = \"binary\" &end\n";
+  ofile << ss.str();
+  ofile.close();
+  ofile.open(ofilename.c_str(), std::ios::app | std::ios::binary);
+  if (!ofile.is_open()){
+    std::string msg = "Cannot open file dump.ebeam";
+    Abort(msg.c_str());
+  }
+  if(Nfreq>0 && Nfreq<Niter){
+    for(int iTurn=Nfreq; iTurn<Niter; iTurn+=Nfreq){
+      ofile.write((char *)&Npart, sizeof(Npart));
+      for(int pid=0; pid<numGPUs; pid++){
+        std::stringstream istr;
+        istr << "output/dump.ebeam.PID_" << pid << ".Turn_" << iTurn << ".bin";
+        std::string ifilename = istr.str();
+        std::ifstream ifile(ifilename.c_str(), std::ios::binary);
+        if (!ifile.is_open()){
+          std::string msg = "Cannot open file dump.ebeam";
+          Abort(msg.c_str());
+        }
+        int PartpGPU = Npart/numGPUs;
+        if(pid==numGPUs-1){
+          PartpGPU+=Npart%numGPUs;
+        }
+        for(int i = 0; i < PartpGPU; ++i){
+          int tmp;
+          double tmp2;
+          ifile.read((char *)&tmp, sizeof(tmp));
+          ofile.write((char *)&tmp, sizeof(tmp));
+          for(int j = 0; j < Ncol; ++j){
+            ifile.read((char *)&tmp2, sizeof(tmp2));
+            ofile.write((char *)&tmp2, sizeof(tmp2));
+          }
+        }
+        ifile.close();
+      }
+    }
+  }
+  ofile.write((char *)&Npart, sizeof(Npart));
+  for(int pid=0; pid<numGPUs; pid++){
+    std::stringstream istr;
+    istr << "output/dump.ebeam.PID_" << pid << ".Turn_" << Niter << ".bin";
+    std::string ifilename = istr.str();
+    std::ifstream ifile(ifilename.c_str(), std::ios::binary);
+    if (!ifile.is_open()){
+      std::string msg = "Cannot open file dump.ebeam";
+      Abort(msg.c_str());
+    }
+    int PartpGPU = Npart/numGPUs;
+    if(pid==numGPUs-1){
+      PartpGPU+=Npart%numGPUs;
+    }
+    for(int i = 0; i < PartpGPU; ++i){
+      int tmp;
+      double tmp2;
+      ifile.read((char *)&tmp, sizeof(tmp));
+      ofile.write((char *)&tmp, sizeof(tmp));
+      for(int j = 0; j < Ncol; ++j){
+        ifile.read((char *)&tmp2, sizeof(tmp2));
+        ofile.write((char *)&tmp2, sizeof(tmp2));
+      }
+    }
+    ifile.close();
+  }
+  ofile.close();
+  system("exec rm -r ./output/*.bin");   
+}
 
 InputProcessing::InputProcessing(int pid){
   this->pending_log = false;
@@ -190,27 +263,50 @@ void InputProcessing::readICs(double *&x, std::string fileName, int &Npart, int 
 }
 
 void InputProcessing::dumpParticles(double *x, int Npart, int Ncol, int Nfreq, int iTurn, std::string ic, std::_Ios_Openmode mode, int pid){
-  std::stringstream str;
-  str << "PID_" << pid << ".Turn_" << iTurn;
-  std::string filename = outputConfig[ic] + "." + str.str();
-  std::ofstream file(filename.c_str(), mode);
-  if (!file.is_open()){
-    std::string msg = "Cannot open file " + outputConfig[ic];
-    Abort(msg.c_str());
-  }
-  std::stringstream ss;
-  ss.precision(16);
-  ss << std::scientific;
-  //ss << std::fixed;
-  for(int i = 0; i < Npart; ++i){
-    ss << iTurn ;
-    for(int j = 0; j < Ncol; ++j){
-      ss << "\t" << x[j * Npart + i];
+  if(ic=="IC_e"||ic=="IC_p"){
+    std::stringstream str;
+    str << "sdds";
+    std::string filename = outputConfig[ic] + "." + str.str();
+    std::ofstream file(filename.c_str(), std::ios::out);
+    if (!file.is_open()){
+      std::string msg = "Cannot open file " + outputConfig[ic];
+      Abort(msg.c_str());
     }
-    ss << "\n";
-  } 
-  file << ss.str();
-  file.close();
+    std::stringstream ss;
+    ss << "SDDS1\n&description text = \"Phase-Space Coordinate Data for Tracking\", contents = \"Phase-Space Coordinate Data\" &end\n&column name = iteration, symbol = n, description = \"Number of cycles\", format_string = %d, type = long,  &end\n&column name = x, symbol = x, units = m, description = \"x position\", format_string = %f, type = double,  &end\n&column name = a, symbol = a, description = \"Normalized x momentum\", format_string = %f, type = double,  &end\n&column name = y, symbol = y, units = m, description = \"y position\", format_string = %f, type = double,  &end\n&column name = b, symbol = b, description = \"Normalized y momentum\", format_string = %f, type = double,  &end\n&column name = l, symbol = l, units = m, description = \"Longitudinal Distance\", format_string = %f, type = double,  &end\n&column name = delta, symbol = $gd, description = \"Energy\", type = double, format_string = %f,  &end\n&data mode = \"binary\" &end\n";
+    file << ss.str();
+    file.close();
+    file.open(filename.c_str(), std::ios::app | std::ios::binary);
+    if (!file.is_open()){
+      std::string msg = "Cannot open file " + outputConfig[ic];
+      Abort(msg.c_str());
+    }
+    file.write((char *)&Npart, sizeof(Npart));
+    for(int i = 0; i < Npart; ++i){
+      file.write((char *)&iTurn, sizeof(iTurn));
+      for(int j = 0; j < Ncol; ++j){
+        file.write((char *)&x[j * Npart + i], sizeof(x[j * Npart + i]));
+      }
+    }
+    file.close();
+  }
+  else{
+    std::stringstream str;
+    str << "PID_" << pid << ".Turn_" << iTurn << ".bin";
+    std::string filename = outputConfig[ic] + "." + str.str();
+    std::ofstream file(filename.c_str(), mode | std::ios::binary);
+    if (!file.is_open()){
+      std::string msg = "Cannot open file " + outputConfig[ic];
+      Abort(msg.c_str());
+    }
+    for(int i = 0; i < Npart; ++i){
+      file.write((char *)&iTurn, sizeof(iTurn));
+      for(int j = 0; j < Ncol; ++j){
+        file.write((char *)&x[j * Npart + i], sizeof(x[j * Npart + i]));
+      }
+    }
+    file.close();
+  }
   log_in_progress = false;
 }
 
