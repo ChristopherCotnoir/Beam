@@ -162,10 +162,14 @@ InputProcessing::ReadInput(BeamParams* bParams){
   beamInput >> bParams->strict_freq;getline(beamInput, line);
 
   beamInput >> bParams->icGen;getline(beamInput, line);
+  beamInput >> bParams->coord1;getline(beamInput, line);
+  beamInput >> bParams->coord2;getline(beamInput, line);
   beamInput >> bParams->x_l;getline(beamInput, line);
   beamInput >> bParams->x_u;getline(beamInput, line);
   beamInput >> bParams->y_l;getline(beamInput, line);
   beamInput >> bParams->y_u;getline(beamInput, line);
+  beamInput >> bParams->coordNum1;getline(beamInput, line);
+  beamInput >> bParams->coordNum2;getline(beamInput, line);
   
   beamInput >> bParams->isGPU;getline(beamInput, line);
   beamInput >> bParams->isSymTr;getline(beamInput, line);

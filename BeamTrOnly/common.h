@@ -54,10 +54,14 @@ struct BeamParams{
   int isGPU;		// flag for CPU/GPU execution: 1-GPU 0-CPU
   int isSymTr;		//0 - Tracking Only, 1 - Symplectic Tracking
   int icGen;            //! IC generation method
-  double x_l;            //! lattice lower bound for first uniform coordinate
-  double x_u;            //! lattice upper bound for first uniform coordinate
-  double y_l;            //! lattice lower bound for second uniform coordinate
-  double y_u;            //! lattice upper bound for second uniform coordinate
+  int coord1;           //! First uniform lattice coordinate
+  int coord2;           //! Second uniform lattice coordinate
+  double x_l;            //! Uniform lattice lower bound for first coordinate
+  double x_u;            //! Uniform lattice upper bound for first coordinate
+  double y_l;            //! Uniform lattice lower bound for second coordinate
+  double y_u;            //! Uniform lattice upper bound for second coordinate
+  int coordNum1          //! Number of values for first uniform coordinate
+  int coordNum2          //! Number of values for second uniform coordinate
   double gamma_e, gamma_p, Lc;
   double E_e0, E_p0;
   int jmaxord_e, jmaxord_p;

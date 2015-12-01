@@ -75,55 +75,51 @@ void Beam::genICs(BeamParams *bParams, PARTICLE_TYPE type){
     p_0 = sqrt(pow((bParams->sig_x0_p/bParams->beta_x0), 2.0) + pow((bParams->sig_y0_p/bParams->beta_y0), 2.0));
     int Nseed = iSeed;
     double ga = bParams->gamma_p;
-    int horizontalLen = 0;
-    int verticalLen = 0;
-    if(bParams->icGen){
-      horizontalLen = pow(Npart, 0.5);
-      verticalLen = Npart/horizontalLen;
-      if(Npart!=horizontalLen*verticalLen){
-        verticalLen++;
-      }
-    }
     for(int i = 0; i < Npart; ++i){
       if(bParams->icGen){
+        horizontalCoord = bParams->coord1;
+        verticalCoord = bParams->coord2;
+        xlow = bParams->x_1
+        xup = bParams->x_u
+        ylow = bParams->y_l
+        yup = bParams->y_u
+        horizontalLen = bParams->coordNum1;
+        verticalLen = bParams->coordNum2;
+
+        if (horizontalLen*verticalLen!=Npart){
+          std::string msg = "Number of values for each coordinate must multiply to total number of particles.";
+          Abort(msg.c_str());
+        }
+        if (horizontalLen<=1||verticalLen<=1){
+          std::string msg = "Number of values for each coordinate must be greater than 1.";
+          Abort(msg.c_str());
+        }
+        if (horizontalCoord<1||horizontalCoord>6||verticalCoord<1||verticalCoord>6){
+          std::string msg = "The two coordinates must be an integer 1-6.";
+          Abort(msg.c_str());
+        }
+        if (horizontalCoord==verticalCoord){
+          std::string msg = "The two coordinates must be different.";
+          Abort(msg.c_str());
+        }
+        if (xlow>=xup||ylow>=yup){
+          std::string msg = "The upper bounds must be greater than the lower bounds.";
+          Abort(msg.c_str());
+        }
+
         int horizontalPosition = i%horizontalLen;
         int verticalPosition = i/horizontalLen;
-        if(bParams->icGen==1){
-          if(horizontalLen==1){
-            x_p[i] = bParams->x_l;
-            x_p[2 * Npart + i] = bParams->y_l;
+        for(int j = 0; j < 6; ++j){
+          if(j+1==horizontalCoord){
+            x_p[j * Npart+i] = xlow+(xup-xlow)*(((double)horizontalPosition)/((double)(horizontalLen-1)));
+          }
+          else if(j+1==verticalCoord){
+            x_p[j * Npart+i] = ylow+(yup-ylow)*(((double)verticalPosition)/((double)(verticalLen-1)));
           }
           else{
-            x_p[i] = bParams->x_l+(bParams->x_u-bParams->x_l)*(((double)horizontalPosition)/((double)(horizontalLen-1)));
-            x_p[2 * Npart + i] = bParams->y_l+(bParams->y_u-bParams->y_l)*(((double)verticalPosition)/((double)(verticalLen-1)));
+            x_p[j * Npart+i] = 0.0;
           }
-          x_p[5 * Npart + i] = 0.0;
-	}
-        if(bParams->icGen==2){
-          if(horizontalLen==1){
-            x_p[i] = bParams->x_l;
-            x_p[5 * Npart + i] = bParams->y_l;
-          }
-          else{
-            x_p[i] = bParams->x_l+(bParams->x_u-bParams->x_l)*(((double)horizontalPosition)/((double)(horizontalLen-1)));
-            x_p[5 * Npart + i] = bParams->y_l+(bParams->y_u-bParams->y_l)*(((double)verticalPosition)/((double)(verticalLen-1)));
-          }
-          x_p[2 * Npart + i] = 0.0;
-	}
-        if(bParams->icGen==3){
-          if(horizontalLen==1){
-            x_p[2 * Npart + i] = bParams->x_l;
-            x_p[5 * Npart + i] = bParams->y_l;
-          }
-          else{
-            x_p[2 * Npart + i] = bParams->x_l+(bParams->x_u-bParams->x_l)*(((double)horizontalPosition)/((double)(horizontalLen-1)));
-            x_p[5 * Npart + i] = bParams->y_l+(bParams->y_u-bParams->y_l)*(((double)verticalPosition)/((double)(verticalLen-1)));
-          }
-          x_p[i] = 0.0;
-	}
-        x_p[Npart+i] = 0.0;
-        x_p[3 * Npart+i] = 0.0;
-        x_p[4 * Npart+i] = 0.0;
+        }
       }
       else{
         x_p[i]         = Util::gauss(0.0, bParams->sig_x0_p, 3.0, Nseed);
@@ -141,55 +137,51 @@ void Beam::genICs(BeamParams *bParams, PARTICLE_TYPE type){
     std::cout << std::setprecision(16);
     std::cout << std::scientific;
     double ga = bParams->gamma_e;
-    int horizontalLen = 0;
-    int verticalLen = 0;
-    if(bParams->icGen){
-      horizontalLen = pow(Npart, 0.5);
-      verticalLen = Npart/horizontalLen;
-      if(Npart!=horizontalLen*verticalLen){
-        verticalLen++;
-      }
-    }
     for(int i = 0; i < Npart; ++i){
       if(bParams->icGen){
+        horizontalCoord = bParams->coord1;
+        verticalCoord = bParams->coord2;
+        xlow = bParams->x_1
+        xup = bParams->x_u
+        ylow = bParams->y_l
+        yup = bParams->y_u
+        horizontalLen = bParams->coordNum1;
+        verticalLen = bParams->coordNum2;
+
+        if (horizontalLen*verticalLen!=Npart){
+          std::string msg = "Number of values for each coordinate must multiply to total number of particles.";
+          Abort(msg.c_str());
+        }
+        if (horizontalLen<=1||verticalLen<=1){
+          std::string msg = "Number of values for each coordinate must be greater than 1.";
+          Abort(msg.c_str());
+        }
+        if (horizontalCoord<1||horizontalCoord>6||verticalCoord<1||verticalCoord>6){
+          std::string msg = "The two coordinates must be an integer 1-6.";
+          Abort(msg.c_str());
+        }
+        if (horizontalCoord==verticalCoord){
+          std::string msg = "The two coordinates must be different.";
+          Abort(msg.c_str());
+        }
+        if (xlow>=xup||ylow>=yup){
+          std::string msg = "The upper bounds must be greater than the lower bounds.";
+          Abort(msg.c_str());
+        }
+
         int horizontalPosition = i%horizontalLen;
         int verticalPosition = i/horizontalLen;
-        if(bParams->icGen==1){
-          if(horizontalLen==1){
-            x_e[i] = bParams->x_l;
-            x_e[2 * Npart + i] = bParams->y_l;
+        for(int j = 0; j < 6; ++j){
+          if(j+1==horizontalCoord){
+            x_e[j * Npart+i] = xlow+(xup-xlow)*(((double)horizontalPosition)/((double)(horizontalLen-1)));
+          }
+          else if(j+1==verticalCoord){
+            x_e[j * Npart+i] = ylow+(yup-ylow)*(((double)verticalPosition)/((double)(verticalLen-1)));
           }
           else{
-            x_e[i] = bParams->x_l+(bParams->x_u-bParams->x_l)*(((double)horizontalPosition)/((double)(horizontalLen-1)));
-            x_e[2 * Npart + i] = bParams->y_l+(bParams->y_u-bParams->y_l)*(((double)verticalPosition)/((double)(verticalLen-1)));
+            x_e[j * Npart+i] = 0.0;
           }
-          x_e[5 * Npart + i] = 0.0;
-	}
-        if(bParams->icGen==2){
-          if(horizontalLen==1){
-            x_e[i] = bParams->x_l;
-            x_e[5 * Npart + i] = bParams->y_l;
-          }
-          else{
-            x_e[i] = bParams->x_l+(bParams->x_u-bParams->x_l)*(((double)horizontalPosition)/((double)(horizontalLen-1)));
-            x_e[5 * Npart + i] = bParams->y_l+(bParams->y_u-bParams->y_l)*(((double)verticalPosition)/((double)(verticalLen-1)));
-          }
-          x_e[2 * Npart + i] = 0.0;
-	}
-        if(bParams->icGen==3){
-          if(horizontalLen==1){
-            x_e[2 * Npart + i] = bParams->x_l;
-            x_e[5 * Npart + i] = bParams->y_l;
-          }
-          else{
-            x_e[2 * Npart + i] = bParams->x_l+(bParams->x_u-bParams->x_l)*(((double)horizontalPosition)/((double)(horizontalLen-1)));
-            x_e[5 * Npart + i] = bParams->y_l+(bParams->y_u-bParams->y_l)*(((double)verticalPosition)/((double)(verticalLen-1)));
-          }
-          x_e[i] = 0.0;
-	}
-        x_e[Npart+i] = 0.0;
-        x_e[3 * Npart+i] = 0.0;
-        x_e[4 * Npart+i] = 0.0;
+        }
       }
       else{
         x_e[i]         = Util::gauss(0.0, bParams->sig_x0_e, 3.0, Nseed);
