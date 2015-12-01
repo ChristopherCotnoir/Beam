@@ -37,6 +37,8 @@ IC.pbeam        ! ICs for the p-beam
 0.0		! synchrotron tune for the p-beam
 1		! number of slices in each beam
 eqCOSY.dat	! GF equations file
+0.01		! Bound of particles distribution in X-direction
+0.01		! Bound of particles distribution in Y-direction
 1		! frequency of sympletic tracking
 0		! Background logging 0:Inline data logging and 1: Enable background logging
 1		! Strict background logging 0:false, 1:true

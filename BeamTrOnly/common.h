@@ -66,6 +66,7 @@ struct BeamParams{
   double E_e0, E_p0;
   int jmaxord_e, jmaxord_p;
 
+  double x_bound,y_bound;
   int NSympFreq;
   bool strict_freq;
   bool log_in_background;

@@ -156,6 +156,8 @@ InputProcessing::ReadInput(BeamParams* bParams){
 
   beamInput >> bParams->gfEqns_file;getline(beamInput, line);
 
+  beamInput >> bParams->x_bound;getline(beamInput, line);
+  beamInput >> bParams->y_bound;getline(beamInput, line);
   beamInput >> bParams->NSympFreq;getline(beamInput, line);
   
   beamInput >> bParams->log_in_background;getline(beamInput, line);
