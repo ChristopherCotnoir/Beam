@@ -60,8 +60,8 @@ struct BeamParams{
   double x_u;            //! Uniform lattice upper bound for first coordinate
   double y_l;            //! Uniform lattice lower bound for second coordinate
   double y_u;            //! Uniform lattice upper bound for second coordinate
-  int coordNum1          //! Number of values for first uniform coordinate
-  int coordNum2          //! Number of values for second uniform coordinate
+  int coordNum1;          //! Number of values for first uniform coordinate
+  int coordNum2;          //! Number of values for second uniform coordinate
   double gamma_e, gamma_p, Lc;
   double E_e0, E_p0;
   int jmaxord_e, jmaxord_p;

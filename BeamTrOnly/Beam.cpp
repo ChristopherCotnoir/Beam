@@ -77,14 +77,14 @@ void Beam::genICs(BeamParams *bParams, PARTICLE_TYPE type){
     double ga = bParams->gamma_p;
     for(int i = 0; i < Npart; ++i){
       if(bParams->icGen){
-        horizontalCoord = bParams->coord1;
-        verticalCoord = bParams->coord2;
-        xlow = bParams->x_1
-        xup = bParams->x_u
-        ylow = bParams->y_l
-        yup = bParams->y_u
-        horizontalLen = bParams->coordNum1;
-        verticalLen = bParams->coordNum2;
+        int horizontalCoord = bParams->coord1;
+        int verticalCoord = bParams->coord2;
+        double xlow = bParams->x_l;
+        double xup = bParams->x_u;
+        double ylow = bParams->y_l;
+        double yup = bParams->y_u;
+        int horizontalLen = bParams->coordNum1;
+        int verticalLen = bParams->coordNum2;
 
         if (horizontalLen*verticalLen!=Npart){
           std::string msg = "Number of values for each coordinate must multiply to total number of particles.";
@@ -139,14 +139,14 @@ void Beam::genICs(BeamParams *bParams, PARTICLE_TYPE type){
     double ga = bParams->gamma_e;
     for(int i = 0; i < Npart; ++i){
       if(bParams->icGen){
-        horizontalCoord = bParams->coord1;
-        verticalCoord = bParams->coord2;
-        xlow = bParams->x_1
-        xup = bParams->x_u
-        ylow = bParams->y_l
-        yup = bParams->y_u
-        horizontalLen = bParams->coordNum1;
-        verticalLen = bParams->coordNum2;
+        int horizontalCoord = bParams->coord1;
+        int verticalCoord = bParams->coord2;
+        double xlow = bParams->x_l;
+        double xup = bParams->x_u;
+        double ylow = bParams->y_l;
+        double yup = bParams->y_u;
+        int horizontalLen = bParams->coordNum1;
+        int verticalLen = bParams->coordNum2;
 
         if (horizontalLen*verticalLen!=Npart){
           std::string msg = "Number of values for each coordinate must multiply to total number of particles.";
