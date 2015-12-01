@@ -156,12 +156,16 @@ InputProcessing::ReadInput(BeamParams* bParams){
 
   beamInput >> bParams->gfEqns_file;getline(beamInput, line);
 
-  beamInput >> bParams->x_bound;getline(beamInput, line);
-  beamInput >> bParams->y_bound;getline(beamInput, line);
   beamInput >> bParams->NSympFreq;getline(beamInput, line);
   
   beamInput >> bParams->log_in_background;getline(beamInput, line);
   beamInput >> bParams->strict_freq;getline(beamInput, line);
+
+  beamInput >> bParams->icGen;getline(beamInput, line);
+  beamInput >> bParams->x_l;getline(beamInput, line);
+  beamInput >> bParams->x_u;getline(beamInput, line);
+  beamInput >> bParams->y_l;getline(beamInput, line);
+  beamInput >> bParams->y_u;getline(beamInput, line);
   
   beamInput >> bParams->isGPU;getline(beamInput, line);
   beamInput >> bParams->isSymTr;getline(beamInput, line);

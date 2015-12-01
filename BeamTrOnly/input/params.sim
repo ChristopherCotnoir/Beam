@@ -37,10 +37,13 @@ IC.pbeam        ! ICs for the p-beam
 0.0		! synchrotron tune for the p-beam
 1		! number of slices in each beam
 eqCOSY.dat	! GF equations file
-0.01		! Bound of particles distribution in X-direction
-0.01		! Bound of particles distribution in Y-direction
 1		! frequency of sympletic tracking
 0		! Background logging 0:Inline data logging and 1: Enable background logging
 1		! Strict background logging 0:false, 1:true
+1		! IC generation method: 0: random 1: uniform x and y 2: uniform x and delta 3: uniform y and delta
+-0.01		! lattice lower bound for first uniform coordinate
+0.01		! lattice upper bound for first uniform coordinate
+-0.01		! lattice lower bound for second uniform coordinate
+0.01		! lattice upper bound for second uniform coordinate
 1		! flag for CPU/GPU execution 0:CPU and 1:GPU
 0		! 0-Tracking Only, 1-Symplectic Tracking

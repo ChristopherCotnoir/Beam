@@ -75,19 +75,64 @@ void Beam::genICs(BeamParams *bParams, PARTICLE_TYPE type){
     p_0 = sqrt(pow((bParams->sig_x0_p/bParams->beta_x0), 2.0) + pow((bParams->sig_y0_p/bParams->beta_y0), 2.0));
     int Nseed = iSeed;
     double ga = bParams->gamma_p;
+    int horizontalLen = 0;
+    int verticalLen = 0;
+    if(bParams->icGen){
+      horizontalLen = pow(Npart, 0.5);
+      verticalLen = Npart/horizontalLen;
+      if(Npart!=horizontalLen*verticalLen){
+        verticalLen++;
+      }
+    }
     for(int i = 0; i < Npart; ++i){
-      x_p[i]         = Util::gauss(0.0, bParams->sig_x0_p, 3.0, Nseed);
-      x_p[Npart + i] = Util::gauss(0.0, bParams->sig_x0_p/bParams->beta_x0, 3.0,Nseed);
-      x_p[2 * Npart + i] = Util::gauss(0.0, bParams->sig_y0_p, 3.0, Nseed);
-      x_p[3 * Npart + i] = Util::gauss(0.0, bParams->sig_y0_p/bParams->beta_y0, 3.0, Nseed);
-      x_p[4 * Npart + i] = Util::gauss(0.0, bParams->sig_z0_p * (ga/(1.0 + ga)), 3.0,Nseed);
-      x_p[5 * Npart + i] = Util::gauss(0.0, (bParams->sig_dE0/bParams->E_p)*(ga/(1.0+ga)), 3.0, Nseed);
-      //std::cout << x_p[0 * Npart + i] << "\t";
-      //std::cout << x_p[1 * Npart + i] << "\t";
-      //std::cout << x_p[2 * Npart + i] << "\t";
-      //std::cout << x_p[3 * Npart + i] << "\t";
-      //std::cout << x_p[4 * Npart + i] << "\t";
-      //std::cout << x_p[5 * Npart + i] << "\n";
+      if(bParams->icGen){
+        int horizontalPosition = i%horizontalLen;
+        int verticalPosition = i/horizontalLen;
+        if(bParams->icGen==1){
+          if(horizontalLen==1){
+            x_p[i] = bParams->x_l;
+            x_p[2 * Npart + i] = bParams->y_l;
+          }
+          else{
+            x_p[i] = bParams->x_l+(bParams->x_u-bParams->x_l)*(((double)horizontalPosition)/((double)(horizontalLen-1)));
+            x_p[2 * Npart + i] = bParams->y_l+(bParams->y_u-bParams->y_l)*(((double)verticalPosition)/((double)(verticalLen-1)));
+          }
+          x_p[5 * Npart + i] = 0.0;
+	}
+        if(bParams->icGen==2){
+          if(horizontalLen==1){
+            x_p[i] = bParams->x_l;
+            x_p[5 * Npart + i] = bParams->y_l;
+          }
+          else{
+            x_p[i] = bParams->x_l+(bParams->x_u-bParams->x_l)*(((double)horizontalPosition)/((double)(horizontalLen-1)));
+            x_p[5 * Npart + i] = bParams->y_l+(bParams->y_u-bParams->y_l)*(((double)verticalPosition)/((double)(verticalLen-1)));
+          }
+          x_p[2 * Npart + i] = 0.0;
+	}
+        if(bParams->icGen==3){
+          if(horizontalLen==1){
+            x_p[2 * Npart + i] = bParams->x_l;
+            x_p[5 * Npart + i] = bParams->y_l;
+          }
+          else{
+            x_p[2 * Npart + i] = bParams->x_l+(bParams->x_u-bParams->x_l)*(((double)horizontalPosition)/((double)(horizontalLen-1)));
+            x_p[5 * Npart + i] = bParams->y_l+(bParams->y_u-bParams->y_l)*(((double)verticalPosition)/((double)(verticalLen-1)));
+          }
+          x_p[i] = 0.0;
+	}
+        x_p[Npart+i] = 0.0;
+        x_p[3 * Npart+i] = 0.0;
+        x_p[4 * Npart+i] = 0.0;
+      }
+      else{
+        x_p[i]         = Util::gauss(0.0, bParams->sig_x0_p, 3.0, Nseed);
+        x_p[Npart + i] = Util::gauss(0.0, bParams->sig_x0_p/bParams->beta_x0, 3.0,Nseed);
+        x_p[2 * Npart + i] = Util::gauss(0.0, bParams->sig_y0_p, 3.0, Nseed);
+        x_p[3 * Npart + i] = Util::gauss(0.0, bParams->sig_y0_p/bParams->beta_y0, 3.0, Nseed);
+        x_p[4 * Npart + i] = Util::gauss(0.0, bParams->sig_z0_p * (ga/(1.0 + ga)), 3.0,Nseed);
+        x_p[5 * Npart + i] = Util::gauss(0.0, (bParams->sig_dE0/bParams->E_p)*(ga/(1.0+ga)), 3.0, Nseed);
+      }
     }
   }else{
     Npart = bParams->Npart_e;
@@ -96,19 +141,64 @@ void Beam::genICs(BeamParams *bParams, PARTICLE_TYPE type){
     std::cout << std::setprecision(16);
     std::cout << std::scientific;
     double ga = bParams->gamma_e;
+    int horizontalLen = 0;
+    int verticalLen = 0;
+    if(bParams->icGen){
+      horizontalLen = pow(Npart, 0.5);
+      verticalLen = Npart/horizontalLen;
+      if(Npart!=horizontalLen*verticalLen){
+        verticalLen++;
+      }
+    }
     for(int i = 0; i < Npart; ++i){
-      x_e[i]         = Util::gauss(0.0, bParams->sig_x0_e, 3.0, Nseed);
-      x_e[Npart + i] = Util::gauss(0.0, bParams->sig_x0_e/bParams->beta_x0, 3.0,Nseed);
-      x_e[2 * Npart + i] = Util::gauss(0.0, bParams->sig_y0_e, 3.0, Nseed);
-      x_e[3 * Npart + i] = Util::gauss(0.0, bParams->sig_y0_e/bParams->beta_y0, 3.0, Nseed);
-      x_e[4 * Npart + i] = Util::gauss(0.0, bParams->sig_z0_e * (ga/(1.0 + ga)), 3.0,Nseed);
-      x_e[5 * Npart + i] = Util::gauss(0.0, (bParams->sig_dE0/bParams->E_e)*(ga/(1.0+ga)), 3.0, Nseed);
-      //std::cout << x_e[0 * Npart + i] << "\t";
-      //std::cout << x_e[1 * Npart + i] << "\t";
-      //std::cout << x_e[2 * Npart + i] << "\t";
-      //std::cout << x_e[3 * Npart + i] << "\t";
-      //std::cout << x_e[4 * Npart + i] << "\t";
-      //std::cout << x_e[5 * Npart + i] << "\n";
+      if(bParams->icGen){
+        int horizontalPosition = i%horizontalLen;
+        int verticalPosition = i/horizontalLen;
+        if(bParams->icGen==1){
+          if(horizontalLen==1){
+            x_e[i] = bParams->x_l;
+            x_e[2 * Npart + i] = bParams->y_l;
+          }
+          else{
+            x_e[i] = bParams->x_l+(bParams->x_u-bParams->x_l)*(((double)horizontalPosition)/((double)(horizontalLen-1)));
+            x_e[2 * Npart + i] = bParams->y_l+(bParams->y_u-bParams->y_l)*(((double)verticalPosition)/((double)(verticalLen-1)));
+          }
+          x_e[5 * Npart + i] = 0.0;
+	}
+        if(bParams->icGen==2){
+          if(horizontalLen==1){
+            x_e[i] = bParams->x_l;
+            x_e[5 * Npart + i] = bParams->y_l;
+          }
+          else{
+            x_e[i] = bParams->x_l+(bParams->x_u-bParams->x_l)*(((double)horizontalPosition)/((double)(horizontalLen-1)));
+            x_e[5 * Npart + i] = bParams->y_l+(bParams->y_u-bParams->y_l)*(((double)verticalPosition)/((double)(verticalLen-1)));
+          }
+          x_e[2 * Npart + i] = 0.0;
+	}
+        if(bParams->icGen==3){
+          if(horizontalLen==1){
+            x_e[2 * Npart + i] = bParams->x_l;
+            x_e[5 * Npart + i] = bParams->y_l;
+          }
+          else{
+            x_e[2 * Npart + i] = bParams->x_l+(bParams->x_u-bParams->x_l)*(((double)horizontalPosition)/((double)(horizontalLen-1)));
+            x_e[5 * Npart + i] = bParams->y_l+(bParams->y_u-bParams->y_l)*(((double)verticalPosition)/((double)(verticalLen-1)));
+          }
+          x_e[i] = 0.0;
+	}
+        x_e[Npart+i] = 0.0;
+        x_e[3 * Npart+i] = 0.0;
+        x_e[4 * Npart+i] = 0.0;
+      }
+      else{
+        x_e[i]         = Util::gauss(0.0, bParams->sig_x0_e, 3.0, Nseed);
+        x_e[Npart + i] = Util::gauss(0.0, bParams->sig_x0_e/bParams->beta_x0, 3.0,Nseed);
+        x_e[2 * Npart + i] = Util::gauss(0.0, bParams->sig_y0_e, 3.0, Nseed);
+        x_e[3 * Npart + i] = Util::gauss(0.0, bParams->sig_y0_e/bParams->beta_y0, 3.0, Nseed);
+        x_e[4 * Npart + i] = Util::gauss(0.0, bParams->sig_z0_e * (ga/(1.0 + ga)), 3.0,Nseed);
+        x_e[5 * Npart + i] = Util::gauss(0.0, (bParams->sig_dE0/bParams->E_e)*(ga/(1.0+ga)), 3.0, Nseed);
+      }
     }
   }
 }
